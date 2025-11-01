@@ -32,6 +32,7 @@ ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application
+RUN npm install
 RUN npm run build
 
 # Production image
