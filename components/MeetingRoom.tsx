@@ -23,6 +23,7 @@ import Loader from './Loader';
 import ClosedCaptionsToggle from './ClosedCaptionsToggle';
 import CaptionsOverlay from './CaptionsOverlay';
 import EndCallButton from './EndCallButton';
+import TranscriptionManager from './TranscriptionManager';
 import { cn } from '@/lib/utils';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
@@ -99,6 +100,7 @@ const MeetingRoom = () => {
         {!isPersonalRoom && <EndCallButton />}
       </div>
       <CaptionsOverlay />
+      <TranscriptionManager />
     </section>
   );
 };

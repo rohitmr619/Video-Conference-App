@@ -24,3 +24,4 @@ services:
     env_file:
       - .env.local
     restart: unless-stopped
+

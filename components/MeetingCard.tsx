@@ -15,6 +15,7 @@ interface MeetingCardProps {
   link: string;
   isRecordings?: boolean;
   onDelete?: () => void;
+  momUrl?: string;
 }
 
 const MeetingCard = ({
@@ -28,6 +29,7 @@ const MeetingCard = ({
   buttonText,
   isRecordings,
   onDelete,
+  momUrl,
 }: MeetingCardProps) => {
   const { toast } = useToast();
 
@@ -74,6 +76,15 @@ const MeetingCard = ({
           >
             <Image src="/icons/delete.svg" alt="delete" width={16} height={16} />
             Delete
+          </Button>
+        )}
+
+        {isPreviousMeeting && momUrl && (
+          <Button
+            onClick={() => window.open(momUrl, '_blank', 'noopener')}
+            className="flex items-center gap-1 rounded px-3 py-1 text-sm bg-emerald-600 hover:bg-emerald-500"
+          >
+            View Minutes
           </Button>
         )}
       </article>

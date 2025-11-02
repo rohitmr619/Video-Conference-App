@@ -9,11 +9,21 @@ import MeetingCard from './MeetingCard';
 import Loader from './Loader';
 import { toast } from '@/components/ui/use-toast';
 
+type MomMetadata = {
+  callId: string;
+  generatedAt: string;
+  pdfUrl: string;
+  title: string;
+};
+
 const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
   const router = useRouter();
   const { endedCalls, upcomingCalls, callRecordings, isLoading } =
     useGetCalls();
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
+  const [momMetadata, setMomMetadata] = useState<Record<string, MomMetadata>>(
+    {},
+  );
 
   const getCalls = () => {
     switch (type) {
@@ -87,6 +97,23 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
     }
   }, [type, callRecordings]);
 
+  useEffect(() => {
+    const fetchMomMetadata = async () => {
+      try {
+        const response = await fetch('/api/mom/metadata', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Failed to fetch meeting minutes');
+        const metadata = (await response.json()) as Record<string, MomMetadata>;
+        setMomMetadata(metadata);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (type === 'ended') {
+      fetchMomMetadata();
+    }
+  }, [type]);
+
   if (isLoading) return <Loader />;
 
   const calls = getCalls();
@@ -119,6 +146,11 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'recordings' }) => {
               type === 'recordings'
                 ? (meeting as CallRecording).url
                 : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${(meeting as Call).id}`
+            }
+            momUrl={
+              type === 'ended'
+                ? momMetadata[(meeting as Call).id as string]?.pdfUrl
+                : undefined
             }
             buttonIcon1={type === 'recordings' ? '/icons/play.svg' : undefined}
             buttonText={type === 'recordings' ? 'Play' : 'Start'}
